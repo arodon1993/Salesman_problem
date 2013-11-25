@@ -4,6 +4,8 @@
 #include "main.h"
 #include "algorithm.h"
 
+//fajka
+
 void read();
 void print();
 void generate();
