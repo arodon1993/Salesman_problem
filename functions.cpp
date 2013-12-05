@@ -8,9 +8,11 @@ void problem_menu()
 	int choice;
 
 	cout<<"Wybierz jeden z algorytmow:\n";
-	cout<<"1.Brute Force\n";
-	cout<<"2.Greedy\n";
-	cout<<"3.Aunt colony\n";
+	cout<<"1. Brute Force\n";
+	cout<<"2. Greedy\n";
+	cout<<"3. Aunt colony\n";
+	cout<<"4. 2-opt\n";
+	cout<<"0. Wstecz\n";
 	cout<<"\nWybor: ";
 
 	cin>>choice;
@@ -30,8 +32,12 @@ void problem_menu()
 		break;
 
 	case 4:
+		opt2();
 		break;
-	}
+
+	case 0:
+		break;
+
 }
 
 void generate()
