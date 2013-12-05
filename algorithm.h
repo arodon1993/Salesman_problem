@@ -8,36 +8,37 @@ void brute_force();
 void ant_colony();
 void hamilton_B(int v);
 int hamilton_G(int v);
+opt2();
 
 // ANTS
-void ant_colony(); // funkcja wywo³ywacza 
+void ant_colony(); // funkcja wywoï¿½ywacza 
 
-int **initialize_Ants(); // zwraca tablicê z mrówkami 'liczba mrówek x liczba_miast'
+int **initialize_Ants(); // zwraca tablicï¿½ z mrï¿½wkami 'liczba mrï¿½wek x liczba_miast'
 
-int *random_Path(const int start); // zwraca losow¹ œciê¿kê
+int *random_Path(const int start); // zwraca losowï¿½ ï¿½ciï¿½ï¿½kï¿½
 
-double **Initialize_Pheromones(); // Zwraca tablicê dwuwymiarow¹ 'liczba_miast x liczba_miast' z feromonami 
+double **Initialize_Pheromones(); // Zwraca tablicï¿½ dwuwymiarowï¿½ 'liczba_miast x liczba_miast' z feromonami 
 
-void Update_Ants(int **ants, double **pheromones); // przypisuje ka¿dej mrówce wygenerowan¹ œcie¿kê
+void Update_Ants(int **ants, double **pheromones); // przypisuje kaï¿½dej mrï¿½wce wygenerowanï¿½ ï¿½cieï¿½kï¿½
 
-int *Build_Trail(int k, int start, double **pheromones); // buduje œcie¿kê opart¹ na feromonach, d³ugoœci i prawdopodobieñstwie
+int *Build_Trail(int k, int start, double **pheromones); // buduje ï¿½cieï¿½kï¿½ opartï¿½ na feromonach, dï¿½ugoï¿½ci i prawdopodobieï¿½stwie
 
-int Next_City(int k, int city, bool *visited, double **pheromones); // zwraca nastêpne miasto do odwiedzenia wed³ug pewnego kryterium i prawdopodobieñstwa
+int Next_City(int k, int city, bool *visited, double **pheromones); // zwraca nastï¿½pne miasto do odwiedzenia wedï¿½ug pewnego kryterium i prawdopodobieï¿½stwa
 
-double *Find_Probabilites(int k,const int city, bool *visited, double **pheromones); // sprawdza warunki krañcowe i wylicza prawdopodobieñstwa wed³ug wzoru
+double *Find_Probabilites(int k,const int city, bool *visited, double **pheromones); // sprawdza warunki kraï¿½cowe i wylicza prawdopodobieï¿½stwa wedï¿½ug wzoru
 
-void Update_Pheromones(double **pheromones, int **ants); // Aktualizuje feromony z uwzglêdnieniem parowania
+void Update_Pheromones(double **pheromones, int **ants); // Aktualizuje feromony z uwzglï¿½dnieniem parowania
 
-int length(const int a, const int b); // zwraca d³ugoœæ odleg³oœci miêdzy dwoma podanymi wierzcho³kami
+int length(const int a, const int b); // zwraca dï¿½ugoï¿½ï¿½ odlegï¿½oï¿½ci miï¿½dzy dwoma podanymi wierzchoï¿½kami
 
 int Find_Index(const int idx, int *tab); // zwraca numer poszukiwanego indeksu w danej tablicy
 
-bool EdgeInTrail(int cityX, int cityY, int *path); // sprawdza czy podana krawêdŸ znajduje siê w cyklu
+bool EdgeInTrail(int cityX, int cityY, int *path); // sprawdza czy podana krawï¿½dï¿½ znajduje siï¿½ w cyklu
 
-double MaxValue(); // zwraca maksymaln¹ wartoœæ double
+double MaxValue(); // zwraca maksymalnï¿½ wartoï¿½ï¿½ double
 
 double Length(int *ants); // zwraca dlugosc podanej sciezki
 
-int *Best_Path(int **ants); // szuka najlepszej œciezki wœród mrówek
+int *Best_Path(int **ants); // szuka najlepszej ï¿½ciezki wï¿½rï¿½d mrï¿½wek
 
 #endif
