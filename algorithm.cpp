@@ -196,17 +196,17 @@ int **initialize_Ants()
 
 int *random_Path(const int start)
 {
-	vector <int> trail; // wektor opisuj¹cy losow¹ œcie¿kê
+	vector <int> trail; // wektor opisujï¿½cy losowï¿½ ï¿½cieï¿½kï¿½
 
-	for(int i=0;i<n;i++) trail.push_back(i); // wrzucenie do wektora œcie¿ki od 0 do n-1
+	for(int i=0;i<n;i++) trail.push_back(i); // wrzucenie do wektora ï¿½cieï¿½ki od 0 do n-1
 
-	random_shuffle(trail.begin(),trail.end()); // wymieszanie losowe wartoœci wektora (œcie¿ki)
+	random_shuffle(trail.begin(),trail.end()); // wymieszanie losowe wartoï¿½ci wektora (ï¿½cieï¿½ki)
 
-	int temp = Find_Index(start,&trail[0]); // Szuka indeks w którym znajduje siê wartoœæ 'start'
+	int temp = Find_Index(start,&trail[0]); // Szuka indeks w ktï¿½rym znajduje siï¿½ wartoï¿½ï¿½ 'start'
 	
 	swap(trail[0],trail[temp]);
 
-	return &trail[0]; // zwraca adres pocz¹tkowy wektora i przypisuje do jakiejœ tablicy int
+	return &trail[0]; // zwraca adres poczï¿½tkowy wektora i przypisuje do jakiejï¿½ tablicy int
 }
 
 double **Initialize_Pheromones()
@@ -216,7 +216,7 @@ double **Initialize_Pheromones()
 		pheromones[i] = new double[n];
 	for (int i=0; i<n; i++)
 	   for (int j=0; j<n; j++)
-		pheromones[i][j] = 0.01; // tablica dwuwymiarowa ca³a zape³niana wartoœciami 0.01
+		pheromones[i][j] = 0.01; // tablica dwuwymiarowa caï¿½a zapeï¿½niana wartoï¿½ciami 0.01
 	return pheromones;
 }
 
@@ -306,12 +306,12 @@ double *Find_Probabilites(int k, const int city, bool *visited, double **pheromo
   for (int i = 0; i < n; ++i) 
   {
     if (i == city)
-      taueta[i] = 0.0; // Prawdopodobieñstwo przejœcia z miasta x do miasta x wynosi 0
+      taueta[i] = 0.0; // Prawdopodobieï¿½stwo przejï¿½cia z miasta x do miasta x wynosi 0
     else if (visited[i] == true)
-      taueta[i] = 0.0; // Prawdopodobieñstwo przejœcia z miasta x do miasta odwiedzonego wynosi 0
+      taueta[i] = 0.0; // Prawdopodobieï¿½stwo przejï¿½cia z miasta x do miasta odwiedzonego wynosi 0
     else 
 	{
-      taueta[i] = pow(pheromones[city][i], ALPHA) * pow((1.0 / length(city, i)), BETA); // obliczenie prawdopodobieñstwa wed³ug okreœlonego wzoru
+      taueta[i] = pow(pheromones[city][i], ALPHA) * pow((1.0 / length(city, i)), BETA); // obliczenie prawdopodobieï¿½stwa wedï¿½ug okreï¿½lonego wzoru
       if (taueta[i] < 0.0001)
         taueta[i] = 0.0001;
       else if (taueta[i] > (MaxValue() / (n * 100)))
@@ -388,6 +388,107 @@ double MaxValue()
       return numeric_limits<double>::max( );
 }
 
-/////////////////////////////
-           /////
-/////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///                                                     2-Opt                                                    ///
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void opt2()
+{
+    int cho, z, *path = new int[n];
+ 
+    system("cls");
+    cout<<"Wybierz cykl ktory ma byc optymalizowany:\n";
+    cout<<"1. 0 1 2 3 4 5 6 7 8 9 ... n-1 \n";
+    cout<<"2. cykl losowy \n";
+    cout<<"\nWybor: ";
+ 
+    cin>>cho;
+ 
+    switch(cho)
+    {
+    case 1:
+        goto ciag;
+        break;
+    case 2:
+        goto losowanie;
+        break;
+    }
+ 
+    ciag:
+    for(z=0; z<n; z++)
+        {
+            path[z]=z;
+        }
+ 
+    goto jump;
+ 
+    losowanie:
+    bool powtorz;
+    int los;
+    for( int z=0; z<n; z++)
+    {
+        do
+        { 
+            powtorz = false; 
+            los = rand()%n; 
+            for( int i=0; i<n; i++)
+            {
+                if( los==path[i] )
+                    powtorz = true; 
+            }
+            path[z]=los; 
+        } while (powtorz);
+    }
+ 
+    jump:
+ 
+    cout<<"Cykl przed 2-opt:      ";
+    for(int i=0; i<n; i++)
+    {
+        cout<<path[i]<<" ";
+    }
+ 
+    int b1, c1, e1, f1, nr = 0, temp; 
+ 
+    //clock tutaj;
+ 
+    do
+    {
+        flaga:
+        b1 = path[nr]; 
+        c1 = path[nr+1]; 
+        for (int g=nr+2; g<n-1; g++) 
+          {
+            e1 = path[g];  
+            f1 = path[g+1];  
+            if ( (graph[b1][c1]+graph[e1][f1]) > (graph[b1][e1]+graph[c1][f1]) )
+              {
+                   temp = path[nr+1];
+                   path[nr+1] = path[g];
+                   path[g] = temp;
+                   goto flaga; 
+              }
+          }
+        nr++; 
+    }
+    while (nr<n-2);
+ 
+    //clock tutaj;
+ 
+    int waga=0;
+    for(int i=n-2; i>-1; i--)
+    {
+        waga+=graph[path[i]][path[i+1]];
+    }
+ 
+    cout<<endl<<endl<<"Najkrotsza sciezka to: "<<waga<<endl;
+     
+    cout<<"Cykl po optymalizacji: ";
+        for(int i=0; i<n; i++)
+    {
+        cout<<path[i]<<" ";
+    }
+ 
+    delete path;
+    cout<<endl<<endl;
+    system("pause");
+}
