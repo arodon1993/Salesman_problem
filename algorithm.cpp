@@ -389,7 +389,7 @@ double MaxValue()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///                                                     2-Opt                                                    ///
+///                                  2-Opt    //przyrost czasu przy liczbie wierzcholkow z zakresu 70-75         ///                                             ///
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void opt2()
 {
@@ -491,4 +491,174 @@ void opt2()
     delete path;
     cout<<endl<<endl;
     system("pause");
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///                                    3-Opt   //u mnie powyżej 13 wierzcholkow duze czasy                       ///
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void opt3()
+{
+	int cho3, z3, *path3 = new int[n];
+
+	system("cls");
+	cout<<"Wybierz cykl ktory ma byc optymalizowany:\n";
+	cout<<"1. 0 1 2 3 4 5 6 7 8 9 ... n-1 \n";
+	cout<<"2. cykl losowy \n";
+	cout<<"\nWybor: ";
+
+	cin>>cho3;
+
+	switch(cho3)
+	{
+	case 1:
+		goto ciag3;
+		break;
+	case 2:
+		goto losowanie3;
+		break;
+	}
+
+	ciag3:
+	for(z3=0; z3<n; z3++)
+		{
+			path3[z3]=z3;
+		}
+
+	goto jump3;
+
+	losowanie3:
+	bool powtorz3;
+	int los3;
+	for( int z3=0; z3<n; z3++)
+	{
+		do
+		{ 
+			powtorz3 = false; 
+			los3 = rand()%n; 
+			for( int i=0; i<n; i++)
+			{
+				if( los3==path3[i] )
+					powtorz3 = true; 
+			}
+			path3[z3]=los3; 
+		} while (powtorz3);
+	}
+
+	jump3:
+
+	cout<<"Cykl przed 3-opt:      ";
+    	for(int i=0; i<n; i++)
+	{
+		cout<<path3[i]<<" ";
+	}
+
+	int a3, b3, c3, d3, e3, f3, nr3 = 0, temp3, min3; 
+	int fixed[7];
+	int switcher;
+
+	//clock tutaj;
+
+	do
+	{
+		flaga3:
+		a3 = path3[nr3];
+		b3 = path3[nr3+1]; 
+		for (int g=nr3+2; g<n-3; g++) 
+		  {
+			c3 = path3[g];  
+			d3 = path3[g+1];  
+			for (int h=g+2; h<n-1; h++) 
+			{
+				switcher = 7;
+				e3 = path3[h];
+				f3 = path3[h+1];
+				min3 = graph[a3][b3] + graph[c3][d3] + graph[e3][f3];
+				fixed[0]=graph[a3][d3] + graph[e3][b3] + graph[c3][f3];
+				fixed[1]=graph[a3][c3] + graph[b3][e3] + graph[d3][f3];
+				fixed[2]=graph[a3][d3] + graph[e3][c3] + graph[b3][f3];
+				fixed[3]=graph[a3][e3] + graph[d3][b3] + graph[c3][f3];
+				//
+				fixed[4]=graph[a3][e3] + graph[d3][c3] + graph[b3][f3];
+				fixed[5]=graph[a3][b3] + graph[c3][e3] + graph[d3][f3];
+				fixed[6]=graph[a3][c3] + graph[b3][d3] + graph[e3][f3];
+
+				for (int i=0; i<7; i++)
+				{
+					if (fixed[i] < min3 )
+					{
+					   min3 = fixed[i];
+						switcher = i;
+					}
+				}
+
+				switch(switcher)
+				{
+					case 0:
+						swap(path3[nr3+1],path3[g+1]);
+						swap(path3[g],path3[h]);
+						goto flaga3; 
+
+					case 1:
+						swap(path3[nr3+1],path3[g]);
+						swap(path3[g+1],path3[h]);
+						goto flaga3; 
+
+					case 2:
+						temp3=path3[nr3+1];
+						path3[nr3+1]=path3[g+1];
+						path3[g+1]=path3[g];
+						path3[g]=path3[h];
+						path3[h]=temp3;
+						goto flaga3; 
+
+					case 3:
+						temp3=path3[nr3+1];
+						path3[nr3+1]=path3[h];
+						path3[h]=path3[g];
+						path3[g]=path3[g+1];
+						path3[g+1]=temp3;
+						goto flaga3; 
+
+					case 4:
+						swap(path3[nr3+1],path3[h]);
+						swap(path3[g],path3[g+1]);
+						goto flaga3; 
+
+					case 5:
+						swap(path3[g+1],path3[h]);
+						goto flaga3; 
+
+					case 6:
+						swap(path3[nr3+1],path3[g]);
+						goto flaga3; 
+
+					case 7:
+						break;
+				}
+			}
+		  }
+		nr3++; 
+	}
+	while (nr3<n-4);
+
+	//clock tutaj;
+
+	int waga3=0;
+	for(int i=n-2; i>-1; i--)
+	{
+		waga3+=graph[path3[i]][path3[i+1]];
+	}
+
+	cout<<endl<<endl<<"Najkrotsza sciezka to: "<<waga3<<endl;
+	
+	cout<<"Cykl po optymalizacji: ";
+	    for(int i=0; i<n; i++)
+    {
+		cout<<path3[i]<<" ";
+	}
+
+	delete path3;
+	cout<<endl<<endl;
+	system("pause");
 }
