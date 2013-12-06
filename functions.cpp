@@ -12,6 +12,7 @@ void problem_menu()
 	cout<<"2. Greedy\n";
 	cout<<"3. Aunt colony\n";
 	cout<<"4. 2-opt\n";
+	cout<<"5. 3-opt\n";
 	cout<<"0. Wstecz\n";
 	cout<<"\nWybor: ";
 
@@ -33,6 +34,9 @@ void problem_menu()
 
 	case 4:
 		opt2();
+		break;
+	case 5:
+		opt3();
 		break;
 
 	case 0:
