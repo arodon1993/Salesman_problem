@@ -8,7 +8,8 @@ void brute_force();
 void ant_colony();
 void hamilton_B(int v);
 int hamilton_G(int v);
-opt2();
+void opt2();
+void opt3();
 
 // ANTS
 void ant_colony(); // funkcja wywo�ywacza 
