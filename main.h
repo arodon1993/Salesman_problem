@@ -4,9 +4,9 @@
 #define INFINITY 2147483647
 #define MAX_WEIGHT 50
 #define ANT_NUMBER 4
-#define ALPHA 3
-#define BETA 2
-#define RHO 0.01;
+#define ALPHA 2
+#define BETA 1
+#define RHO 0.1;
 #define Q 2.0;
 // NAGLOWKI
 

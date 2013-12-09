@@ -148,16 +148,18 @@ int hamilton_G(int v)
            /////                       /////                       /////                       /////       
 void ant_colony()
 {
+	srand(time(NULL));
+
 	const int loop_number = 1000;
     
     int** ants = initialize_Ants(); 
- 
+
     int *best_path = Best_Path(ants);
     
 	double bestLength = Length(best_path);
- 
+
 	double **pheromones = Initialize_Pheromones();
- 
+
     int counter = 0;
        
 	while (counter < loop_number)
@@ -167,15 +169,19 @@ void ant_colony()
            
        int *currBestTrail = Best_Path(ants);
        double currBestLength = Length(currBestTrail);
-       
+
 	   if (currBestLength < bestLength)
 	   {
-         bestLength = currBestLength;
-         best_path = currBestTrail;
+		   delete best_path;
+		   best_path = NULL;
+		   bestLength = currBestLength;
+           best_path = currBestTrail;
        }
        counter++;
      }
 
+	cout<<bestLength;
+	 
 	getchar();
 	getchar();
 }
@@ -206,7 +212,12 @@ int *random_Path(const int start)
 	
 	swap(trail[0],trail[temp]);
 
-	return &trail[0]; // zwraca adres pocz�tkowy wektora i przypisuje do jakiej� tablicy int
+	int *tab = new int[n];
+
+	for(int i=0;i<n;i++) 
+		tab[i] = trail[i];
+
+	return tab; // zwraca adres pocz�tkowy wektora i przypisuje do jakiej� tablicy int
 }
 
 double **Initialize_Pheromones()
@@ -216,7 +227,7 @@ double **Initialize_Pheromones()
 		pheromones[i] = new double[n];
 	for (int i=0; i<n; i++)
 	   for (int j=0; j<n; j++)
-		pheromones[i][j] = 0.01; // tablica dwuwymiarowa ca�a zape�niana warto�ciami 0.01
+		pheromones[i][j] = 1.0; // tablica dwuwymiarowa ca�a zape�niana warto�ciami 0.01
 	return pheromones;
 }
 
@@ -231,7 +242,6 @@ void Update_Ants(int **ants, double **pheromones)
 
 int *Build_Trail(int k, int start, double **pheromones)
 {
-
   int *trail = new int[n];
   bool *visited = new bool[n];
 
@@ -245,6 +255,7 @@ int *Build_Trail(int k, int start, double **pheromones)
     trail[i+1] = next;
     visited[next] = true;
   }
+
   return trail;
 }
 
@@ -253,6 +264,7 @@ int Next_City(int k, int city, bool *visited, double **pheromones)
   double *probs = Find_Probabilites(k, city, visited, pheromones);
  
   double *cumul = new double[n + 1];
+  cumul[0] = 0.0;
   for (int i = 0; i < n; ++i)
     cumul[i + 1] = cumul[i] + probs[i];
  
@@ -262,7 +274,7 @@ int Next_City(int k, int city, bool *visited, double **pheromones)
 
   double p = liczba( e );
  
-  for (int i = 0; i < n ; ++i)
+  for (int i = 0; i < n ; i++)
     if (p >= cumul[i] && p < cumul[i + 1])
       return i;
 }
@@ -285,7 +297,6 @@ int *Best_Path(int **ants)
    for(int i=0; i<n; i++)
 	   bestPath[i] = ants[idxBestLength][i];
 
-   
    return bestPath;
 }
 
@@ -293,8 +304,10 @@ double Length(int *ants)
 {
 	double value=0;
 
-	for(int i=0;i<n;i++)
-		value+=ants[i];
+	for(int i=0;i<n-1;i++)
+		value+=length(ants[i],ants[i+1]);
+
+	value+=length(ants[0],ants[n-1]);
 
 	return value;
 }
@@ -336,21 +349,21 @@ void Update_Pheromones(double **pheromones, int **ants)
         for (int j = i + 1; j < n; ++j)
         {
 			for (int k = 0; k < ANT_NUMBER; ++k)
-          {
-            double length = Length(ants[k]);
-            double decrease = (1.0 - rho) * pheromones[i][j];
-            double increase = 0.0;
-            if (EdgeInTrail(i, j, ants[k]) == true) increase = (q / length);
+			  {
+				double length = Length(ants[k]);
+				double decrease = (1.0 - rho) * pheromones[i][j];
+				double increase = 0.0;
+				if (EdgeInTrail(i, j, ants[k]) == true) increase = (q / length);
 
-            pheromones[i][j] = decrease + increase;
+				pheromones[i][j] = decrease + increase;
 
-            if (pheromones[i][j] < 0.0001)
-              pheromones[i][j] = 0.0001;
-            else if (pheromones[i][j] > 100000.0)
-              pheromones[i][j] = 100000.0;
+				if (pheromones[i][j] < 0.0001)
+				  pheromones[i][j] = 0.0001;
+				else if (pheromones[i][j] > 100000.0)
+				  pheromones[i][j] = 100000.0;
 
-            pheromones[j][i] = pheromones[i][j];
-          }
+				pheromones[j][i] = pheromones[i][j];
+			  }
         }
       }
 }

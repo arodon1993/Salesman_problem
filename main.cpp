@@ -7,7 +7,6 @@ int **graph = NULL; // zmienna reprezentujaca graf
 int n; // zmienna okreslajaca ilosc wierzcholkow
 
 
-
 using namespace std;
 
 int main()

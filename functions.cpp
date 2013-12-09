@@ -10,7 +10,7 @@ void problem_menu()
 	cout<<"Wybierz jeden z algorytmow:\n";
 	cout<<"1. Brute Force\n";
 	cout<<"2. Greedy\n";
-	cout<<"3. Aunt colony\n";
+	cout<<"3. Ant colony\n";
 	cout<<"4. 2-opt\n";
 	cout<<"5. 3-opt\n";
 	cout<<"0. Wstecz\n";
@@ -41,7 +41,7 @@ void problem_menu()
 
 	case 0:
 		break;
-
+	}
 }
 
 void generate()
