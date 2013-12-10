@@ -152,23 +152,23 @@ void ant_colony()
 
 	const int loop_number = 1000;
     
-    int** ants = initialize_Ants(); 
+    int** ants = CreateAnts(); 
 
-    int *best_path = Best_Path(ants);
+    int *best_path = ShortestPath(ants);
     
-	double bestLength = Length(best_path);
+	double bestLength = CycleLength(best_path);
 
-	double **pheromones = Initialize_Pheromones();
+	double **pheromones = InitializePheromones();
 
     int counter = 0;
        
 	while (counter < loop_number)
     {
-       Update_Ants(ants, pheromones);
-       Update_Pheromones(pheromones, ants);
+       UpdateAnts(ants, pheromones);
+       UpdatePheromones(pheromones, ants);
            
-       int *currBestTrail = Best_Path(ants);
-       double currBestLength = Length(currBestTrail);
+       int *currBestTrail = ShortestPath(ants);
+       double currBestLength = CycleLength(currBestTrail);
 
 	   if (currBestLength < bestLength)
 	   {
@@ -186,7 +186,7 @@ void ant_colony()
 	getchar();
 }
 
-int **initialize_Ants()
+int **CreateAnts()
 {
 	int **ants = new int *[ANT_NUMBER];
 	int random;
@@ -194,13 +194,13 @@ int **initialize_Ants()
 	for(int i=0;i<ANT_NUMBER;i++)
 	{
 		random = rand() % n;
-		ants[i] = random_Path(random);
+		ants[i] = CreateRandomPath(random);
 	}
 
 	return ants;
 }
 
-int *random_Path(const int start)
+int *CreateRandomPath(const int start)
 {
 	vector <int> trail; // wektor opisuj�cy losow� �cie�k�
 
@@ -208,7 +208,7 @@ int *random_Path(const int start)
 
 	random_shuffle(trail.begin(),trail.end()); // wymieszanie losowe warto�ci wektora (�cie�ki)
 
-	int temp = Find_Index(start,&trail[0]); // Szuka indeks w kt�rym znajduje si� warto�� 'start'
+	int temp = FindIndexOf(start,&trail[0]); // Szuka indeks w kt�rym znajduje si� warto�� 'start'
 	
 	swap(trail[0],trail[temp]);
 
@@ -220,7 +220,7 @@ int *random_Path(const int start)
 	return tab; // zwraca adres pocz�tkowy wektora i przypisuje do jakiej� tablicy int
 }
 
-double **Initialize_Pheromones()
+double **InitializePheromones()
 {
 	double **pheromones = new double*[n];
 	for (int i=0; i<n; i++)
@@ -231,16 +231,16 @@ double **Initialize_Pheromones()
 	return pheromones;
 }
 
-void Update_Ants(int **ants, double **pheromones)
+void UpdateAnts(int **ants, double **pheromones)
 { 
   for (int i = 0; i < ANT_NUMBER; i++) 
   {
     int start = rand() % n;
-    ants[i] = Build_Trail(i, start, pheromones);
+    ants[i] = BuildNewPath(i, start, pheromones);
   }
 }
 
-int *Build_Trail(int k, int start, double **pheromones)
+int *BuildNewPath(int k, int start, double **pheromones)
 {
   int *trail = new int[n];
   bool *visited = new bool[n];
@@ -251,7 +251,7 @@ int *Build_Trail(int k, int start, double **pheromones)
   for (int i = 0; i < n-1; ++i) 
   {
     int city = trail[i];
-    int next = Next_City(k, city, visited, pheromones);
+    int next = ChooseNextCity(k, city, visited, pheromones);
     trail[i+1] = next;
     visited[next] = true;
   }
@@ -259,14 +259,14 @@ int *Build_Trail(int k, int start, double **pheromones)
   return trail;
 }
 
-int Next_City(int k, int city, bool *visited, double **pheromones)
+int ChooseNextCity(int k, int city, bool *visited, double **pheromones)
 {
-  double *probs = Find_Probabilites(k, city, visited, pheromones);
+  double *probabilites = FindProbabilites(k, city, visited, pheromones);
  
   double *cumul = new double[n + 1];
   cumul[0] = 0.0;
   for (int i = 0; i < n; ++i)
-    cumul[i + 1] = cumul[i] + probs[i];
+    cumul[i + 1] = cumul[i] + probabilites[i];
  
   random_device rd;
   default_random_engine e( rd() ); // seed PRNG
@@ -279,13 +279,13 @@ int Next_City(int k, int city, bool *visited, double **pheromones)
       return i;
 }
 
-int *Best_Path(int **ants)
+int *ShortestPath(int **ants)
 {
-   double bestLength = Length(ants[0]); 
+   double bestLength = CycleLength(ants[0]); 
    int idxBestLength = 0;
    for (int k = 1; k < ANT_NUMBER ; ++k)
    {
-     double len = Length(ants[k]);
+     double len = CycleLength(ants[k]);
      if (len < bestLength)
      {
        bestLength = len;
@@ -300,19 +300,19 @@ int *Best_Path(int **ants)
    return bestPath;
 }
 
-double Length(int *ants)
+double CycleLength(int *ants)
 {
 	double value=0;
 
 	for(int i=0;i<n-1;i++)
-		value+=length(ants[i],ants[i+1]);
+		value+=EdgeLength(ants[i],ants[i+1]);
 
-	value+=length(ants[0],ants[n-1]);
+	value+=EdgeLength(ants[0],ants[n-1]);
 
 	return value;
 }
 
-double *Find_Probabilites(int k, const int city, bool *visited, double **pheromones)
+double *FindProbabilites(int k, const int city, bool *visited, double **pheromones)
 {
   double *taueta = new double[n];
   double sum = 0.0;
@@ -324,7 +324,7 @@ double *Find_Probabilites(int k, const int city, bool *visited, double **pheromo
       taueta[i] = 0.0; // Prawdopodobie�stwo przej�cia z miasta x do miasta odwiedzonego wynosi 0
     else 
 	{
-      taueta[i] = pow(pheromones[city][i], ALPHA) * pow((1.0 / length(city, i)), BETA); // obliczenie prawdopodobie�stwa wed�ug okre�lonego wzoru
+      taueta[i] = pow(pheromones[city][i], ALPHA) * pow((1.0 / EdgeLength(city, i)), BETA); // obliczenie prawdopodobie�stwa wed�ug okre�lonego wzoru
       if (taueta[i] < 0.0001)
         taueta[i] = 0.0001;
       else if (taueta[i] > (MaxValue() / (n * 100)))
@@ -340,7 +340,7 @@ double *Find_Probabilites(int k, const int city, bool *visited, double **pheromo
   return probs;
 }
 
-void Update_Pheromones(double **pheromones, int **ants)
+void UpdatePheromones(double **pheromones, int **ants)
 {
 	int rho = RHO;
 	int q = Q;
@@ -350,10 +350,10 @@ void Update_Pheromones(double **pheromones, int **ants)
         {
 			for (int k = 0; k < ANT_NUMBER; ++k)
 			  {
-				double length = Length(ants[k]);
+				double length = CycleLength(ants[k]);
 				double decrease = (1.0 - rho) * pheromones[i][j];
 				double increase = 0.0;
-				if (EdgeInTrail(i, j, ants[k]) == true) increase = (q / length);
+				if (IsEdgeInTrail(i, j, ants[k]) == true) increase = (q / length);
 
 				pheromones[i][j] = decrease + increase;
 
@@ -368,10 +368,10 @@ void Update_Pheromones(double **pheromones, int **ants)
       }
 }
 
-bool EdgeInTrail(int cityX, int cityY, int *path)
+bool IsEdgeInTrail(int cityX, int cityY, int *path)
     {
       int lastIndex = n - 1;
-      int idx = Find_Index(cityX, path);
+      int idx = FindIndexOf(cityX, path);
 
       if (idx == 0 && path[1] == cityY) return true;
       else if (idx == 0 && path[lastIndex] == cityY) return true;
@@ -384,12 +384,12 @@ bool EdgeInTrail(int cityX, int cityY, int *path)
       else return false;
     }
 
-int length(const int a, const int b)
+int EdgeLength(const int a, const int b)
 {
 	return graph[a][b];
 }
 
-int Find_Index(const int idx,int *tab)
+int FindIndexOf(const int idx,int *tab)
 {
 	for(int i=0;i<n;i++)
 		if(idx==tab[i]) 

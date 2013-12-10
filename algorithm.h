@@ -12,34 +12,34 @@ void opt2();
 void opt3();
 
 // ANTS
-void ant_colony(); // funkcja wywo�ywacza 
+void ant_colony(); // funkcja wywoływacza 
 
-int **initialize_Ants(); // zwraca tablic� z mr�wkami 'liczba mr�wek x liczba_miast'
+int **CreateAnts(); // zwraca tablicę z mrówkami 'liczba mrówek x liczba_miast'
 
-int *random_Path(const int start); // zwraca losow� �ci��k�
+int *CreateRandomPath(const int start); // zwraca losową ścieżkę
 
-double **Initialize_Pheromones(); // Zwraca tablic� dwuwymiarow� 'liczba_miast x liczba_miast' z feromonami 
+double **InitializePheromones(); // Zwraca tablicę dwuwymiarową 'liczba_miast x liczba_miast' z feromonami 
 
-void Update_Ants(int **ants, double **pheromones); // przypisuje ka�dej mr�wce wygenerowan� �cie�k�
+void UpdateAnts(int **ants, double **pheromones); // przypisuje każdej mrówce wygenerowaną ścieżkę
 
-int *Build_Trail(int k, int start, double **pheromones); // buduje �cie�k� opart� na feromonach, d�ugo�ci i prawdopodobie�stwie
+int *BuildNewPath(int k, int start, double **pheromones); // buduje ścieżkę opartą na feromonach, długości i prawdopodobieństwie
 
-int Next_City(int k, int city, bool *visited, double **pheromones); // zwraca nast�pne miasto do odwiedzenia wed�ug pewnego kryterium i prawdopodobie�stwa
+int ChooseNextCity(int k, int city, bool *visited, double **pheromones); // zwraca następne miasto do odwiedzenia według pewnego kryterium i prawdopodobieństwa
 
-double *Find_Probabilites(int k,const int city, bool *visited, double **pheromones); // sprawdza warunki kra�cowe i wylicza prawdopodobie�stwa wed�ug wzoru
+double *FindProbabilites(int k,const int city, bool *visited, double **pheromones); // sprawdza warunki krańcowe i wylicza prawdopodobieństwa według wzoru
 
-void Update_Pheromones(double **pheromones, int **ants); // Aktualizuje feromony z uwzgl�dnieniem parowania
+void UpdatePheromones(double **pheromones, int **ants); // Aktualizuje feromony z uwzględnieniem parowania
 
-int length(const int a, const int b); // zwraca d�ugo�� odleg�o�ci mi�dzy dwoma podanymi wierzcho�kami
+int EdgeLength(const int a, const int b); // zwraca długość odległości między dwoma podanymi wierzchołkami
 
-int Find_Index(const int idx, int *tab); // zwraca numer poszukiwanego indeksu w danej tablicy
+int FindIndexOf(const int idx, int *tab); // zwraca numer poszukiwanego indeksu w danej tablicy
 
-bool EdgeInTrail(int cityX, int cityY, int *path); // sprawdza czy podana kraw�d� znajduje si� w cyklu
+bool IsEdgeInTrail(int cityX, int cityY, int *path); // sprawdza czy podana krawędź znajduje się w cyklu
 
-double MaxValue(); // zwraca maksymaln� warto�� double
+double MaxValue(); // zwraca maksymalną wartość double
 
-double Length(int *ants); // zwraca dlugosc podanej sciezki
+double CycleLength(int *ants); // zwraca dlugosc podanej sciezki
 
-int *Best_Path(int **ants); // szuka najlepszej �ciezki w�r�d mr�wek
+int *ShortestPath(int **ants); // szuka najlepszej ściezki wśród mrówek
 
 #endif
